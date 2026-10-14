@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explora Riviera Maya</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header class="encabezado">
+    <div class="encabezado-contenido">
+      <span class="subtitulo">DESCUBRE · VIVE · SABOREA</span>
+      <h1>Explora Riviera Maya</h1>
+      <p>Experiencias naturales, culturales, de aventura y gastronomía</p>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="panel">
+      <div>
+        <h2>Experiencias disponibles</h2>
+        <p id="contador">Cargando experiencias...</p>
+      </div>
+
+      <div class="controles">
+        <div class="buscador">
+          <label for="buscador">Buscar experiencia</label>
+          <input
+            id="buscador"
+            type="search"
+            placeholder="Ej. cenote, tortugas, tirolesa..."
+          >
+        </div>
+
+        <button
+          id="ordenar"
+          class="boton-ordenar"
+          type="button"
+        >
+          Precio: mayor a menor ↓
+        </button>
+
+        <div class="filtros" aria-label="Filtros del catálogo">
+          <button class="activo" data-categoria="todas">Todas</button>
+          <button data-categoria="naturaleza">Naturaleza</button>
+          <button data-categoria="cultura">Cultura</button>
+          <button data-categoria="aventura">Aventura</button>
+          <button data-categoria="gastronomia">Gastronomía</button>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="catalogo"
+      class="catalogo"
+      aria-live="polite"
+    ></section>
+
+    <!-- Sección agregada para Mi reservación solicitada en la práctica -->
+    <section class="resumen">
+      <h2>Mi reservación</h2>
+      <div id="listaReservas">
+        <p>No hay experiencias seleccionadas.</p>
+      </div>
+      <p class="total">Total: <span id="total">$0 MXN</span></p>
+    </section>
+  </main>
+</body>
+
+</html>
