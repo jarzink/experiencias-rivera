@@ -26,7 +26,6 @@ async function cargarExperiencias() {
     }
 }
 
-// Mostrar las experiencias en el catálogo respetando el diseño original
 function mostrarExperiencias(lista) {
     if (lista.length === 0) {
         catalogo.innerHTML = `
@@ -57,7 +56,7 @@ function mostrarExperiencias(lista) {
                 </p>
 
                 <label>Personas:
-                    <input type="number" id="cantidad-${experiencia.id}" min="1" max="${experiencia.cupo}" value="1">
+                    <input type="number" id="cantidad-${experiencia.id}" min="1" max="15" value="1">
                 </label>
 
                 <button class="btn-reservar" data-id="${experiencia.id}">
@@ -85,7 +84,6 @@ function actualizarCatalogo() {
         return coincideCategoria && coincideTexto;
     });
 
-    // Ordenar la lista completa antes de mostrarla
     resultados.sort((a, b) => {
         if (ordenPrecioValor === "mayor") {
             return b.precio - a.precio;
@@ -96,7 +94,6 @@ function actualizarCatalogo() {
     mostrarExperiencias(resultados);
 }
 
-// Eventos para los botones de categorías originales
 botones.forEach(boton => {
     boton.addEventListener("click", () => {
         botones.forEach(elemento => {
@@ -123,7 +120,6 @@ ordenar.addEventListener("click", () => {
     actualizarCatalogo();
 });
 
-// Lógica de reservaciones
 function agregarEventosReservar() {
     document.querySelectorAll(".btn-reservar").forEach(boton => {
         boton.addEventListener("click", () => {
@@ -138,8 +134,13 @@ function agregarReserva(id) {
     const entradaCantidad = document.querySelector(`#cantidad-${id}`);
     const cantidad = Number(entradaCantidad.value);
 
+    if (cantidad > 15) {
+        alert("El límite máximo es de 15 personas por reserva.");
+        return;
+    }
+
     if (cantidad < 1 || cantidad > experiencia.cupo) {
-        alert("Cantidad no válida");
+        alert("Cantidad no válida o supera el cupo disponible.");
         return;
     }
 
@@ -147,8 +148,12 @@ function agregarReserva(id) {
 
     if (reservaExistente) {
         const nuevaCantidad = reservaExistente.cantidad + cantidad;
+        if (nuevaCantidad > 15) {
+            alert("No puedes superar el límite de 15 personas acumuladas en esta experiencia.");
+            return;
+        }
         if (nuevaCantidad > experiencia.cupo) {
-            alert("La cantidad supera el cupo disponible");
+            alert("La cantidad total supera el cupo disponible.");
             return;
         }
         reservaExistente.cantidad = nuevaCantidad;
@@ -189,6 +194,17 @@ function mostrarReservas() {
     const totalReserva = reservas.reduce((suma, r) => suma + r.subtotal, 0);
     total.textContent = `$${totalReserva} MXN`;
 
+    listaReservas.innerHTML += `
+        <div style="margin-top: 20px; border-top: 1px solid #e0ede9; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-vaciar" onclick="vaciarReservas()" style="background: var(--peligro, #b3261e); color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: bold;">
+                Vaciar reservas
+            </button>
+            <button onclick="confirmarReservaFinal()" style="background: #00695c; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.95rem; font-weight: bold;">
+                Reservar
+            </button>
+        </div>
+    `;
+
     agregarEventosEliminar();
 }
 
@@ -206,5 +222,22 @@ function eliminarReserva(id) {
     mostrarReservas();
 }
 
-// Iniciar aplicación cargando los datos con fetch mediante Live Server
+function vaciarReservas() {
+    const confirmar = confirm("¿Estás seguro de que deseas eliminar todas tus reservas?");
+    if (confirmar) {
+        reservas = [];
+        mostrarReservas();
+    }
+}
+
+function confirmarReservaFinal() {
+    if (reservas.length === 0) {
+        alert("No tienes ninguna reserva pendiente.");
+        return;
+    }
+    alert("¡Reservación realizada con éxito! Disfruta tu experiencia en la Riviera Maya.");
+    reservas = [];
+    mostrarReservas();
+}
+
 cargarExperiencias();
